@@ -11,7 +11,6 @@ import pytest
 
 from shuffler.models import AttackReport, PayloadResult
 
-
 # ── PayloadResult ─────────────────────────────────────────────────────── #
 
 

@@ -1,5 +1,5 @@
 # ==========================================
-# [REDACTED: Strategic SRE Agency] 
+# [REDACTED: Strategic SRE Agency]
 # Purpose: Simulate an AI Agent Race Condition & The WAF Fix
 # Execution: Run this script while recording the Loom Shadow Audit
 # ==========================================
@@ -7,8 +7,9 @@
 import asyncio
 import hashlib
 import json
-import time
 import os
+import time
+
 import asyncpg
 from dotenv import load_dotenv
 
@@ -41,27 +42,32 @@ async def vulnerable_webhook_handler(pool):
     """
     # Weak hash generation often found in vulnerable architectures
     weak_key = await generate_idempotency_hash(RAW_TEXT_PAYLOAD + str(time.time_ns()))
-    
+
     async with pool.acquire() as conn:
         print("[!] VULNERABLE PATH: Webhook received. Inserting to lead_transactions...")
         # Blindly inserts without checking idempotency ledger
         await conn.execute(
-            "INSERT INTO lead_transactions (transaction_hash, raw_text, status, extracted_firstname, extracted_email) VALUES ($1, $2, 'COMPLETED', $3, $4)",
-            weak_key, RAW_TEXT_PAYLOAD, INBOUND_AI_PAYLOAD["lead_name"], INBOUND_AI_PAYLOAD["lead_email"]
+            "INSERT INTO lead_transactions "
+            "(transaction_hash, raw_text, status, extracted_firstname, "
+            "extracted_email) VALUES ($1, $2, 'COMPLETED', $3, $4)",
+            weak_key,
+            RAW_TEXT_PAYLOAD,
+            INBOUND_AI_PAYLOAD["lead_name"],
+            INBOUND_AI_PAYLOAD["lead_email"],
         )
 
         print(f"[!] VULNERABLE PATH: Hitting CRM Platform at {CRM_WEBHOOK_URI}...")
-        
+
 async def agentic_waf_handler(pool):
     """
     SCENARIO 2: SRE Gateway
     Intercepts the payload, checks the Idempotency Ledger, and blocks duplicates.
     """
     idem_key = await generate_idempotency_hash(RAW_TEXT_PAYLOAD)
-    
+
     async with pool.acquire() as conn:
         print("[*] SRE GATEWAY: Payload intercepted. Checking Idempotency Lock...")
-        
+
         result = await conn.execute(
             """
             INSERT INTO waf_idempotency_ledger (idempotency_key, target_system)
@@ -70,22 +76,30 @@ async def agentic_waf_handler(pool):
             """,
             idem_key
         )
-        
+
         if result.endswith('0'):
-            print(f"[X] SRE GATEWAY BLOCKED: Race condition detected. Payload hash {idem_key[:8]} already processed.")
+            print(
+                f"[X] SRE GATEWAY BLOCKED: Race condition detected. "
+                f"Payload hash {idem_key[:8]} already processed."
+            )
             return {"status": 200, "message": "Idempotent request dropped safely."}
-        
-        print(f"[V] SRE GATEWAY SECURED: Lock acquired. Processing...")
+
+        print("[V] SRE GATEWAY SECURED: Lock acquired. Processing...")
         await conn.execute(
-            "INSERT INTO lead_transactions (transaction_hash, raw_text, status, extracted_firstname, extracted_email) VALUES ($1, $2, 'COMPLETED', $3, $4)",
-            idem_key, RAW_TEXT_PAYLOAD, INBOUND_AI_PAYLOAD["lead_name"], INBOUND_AI_PAYLOAD["lead_email"]
+            "INSERT INTO lead_transactions "
+            "(transaction_hash, raw_text, status, extracted_firstname, "
+            "extracted_email) VALUES ($1, $2, 'COMPLETED', $3, $4)",
+            idem_key,
+            RAW_TEXT_PAYLOAD,
+            INBOUND_AI_PAYLOAD["lead_name"],
+            INBOUND_AI_PAYLOAD["lead_email"],
         )
         print(f"[V] SRE GATEWAY: Pushing pristine data to CRM at {CRM_WEBHOOK_URI}...")
         return {"status": 201, "message": "Lead processed and sent."}
 
 async def run_simulation():
     pool = await asyncpg.create_pool(DB_DSN)
-    
+
     print("\n--- INITIATING AI PIPELINE RACE CONDITION SIMULATION ---\n")
     time.sleep(2)
 
@@ -95,20 +109,23 @@ async def run_simulation():
         vulnerable_webhook_handler(pool)
     )
     print("RESULT: CRM is corrupted. You now have two identical records pushed to CRM.\n")
-    
+
     # Resetting the database for test 2
     async with pool.acquire() as conn:
         await conn.execute("DELETE FROM lead_transactions;")
         await conn.execute("DELETE FROM waf_idempotency_ledger;")
-    
+
     time.sleep(3)
-    
+
     print("--- TEST 2: AGENTIC WAF GATEWAY ---")
     await asyncio.gather(
         agentic_waf_handler(pool),
         agentic_waf_handler(pool)
     )
-    print("RESULT: Architecture secured. The database lock mathematically prevented the duplication.\n")
+    print(
+        "RESULT: Architecture secured. "
+        "The database lock mathematically prevented the duplication.\n"
+    )
 
     await pool.close()
 

@@ -19,8 +19,7 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 
-from mock_receiver import app, _BACKTICK_RE
-
+from mock_receiver import _BACKTICK_RE, app
 
 # ── regex unit tests ──────────────────────────────────────────────────── #
 

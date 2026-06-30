@@ -1,0 +1,56 @@
+name: Feature Request
+description: Propose a new capability or improvement to Shuffler. Clearly articulate the problem before suggesting a solution.
+title: "[FEATURE] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The Problem
+      description: >
+        Describe the friction, limitation, or gap in the current tool that
+        motivates this request. Focus on the user experience or engineering
+        constraint, not the implementation.
+      placeholder: "Currently, Shuffler does not support..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: >
+        Describe the change you are proposing. Include specific details such as
+        new CLI flags, new attack vector modules, architectural changes, or
+        configuration options. Provide example command invocations where
+        applicable.
+      placeholder: |
+        Add a `--delay` flag to the `attack` command that introduces a
+        configurable delay between payload bursts:
+
+        shuffler attack --target http://localhost:8000 --vector duplication --burst 50 --delay 500
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: >
+        List any alternative approaches you evaluated and explain why they were
+        rejected or deemed inferior to your proposed solution.
+      placeholder: "An alternative would be to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: >
+        Provide any supplementary information that would help maintainers
+        evaluate this request. This may include links to related issues,
+        references to similar tools, or relevant architectural diagrams.
+      placeholder: "See also: ..."
+    validations:
+      required: false

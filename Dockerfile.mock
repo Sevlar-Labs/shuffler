@@ -1,0 +1,30 @@
+# ──────────────────────────────────────────────────────────────────────
+# Dockerfile.mock — Mock CRM Receiver container
+# ──────────────────────────────────────────────────────────────────────
+FROM python:3.11-slim AS runtime
+
+LABEL maintainer="SevlarLabs" \
+      description="Mock enterprise CRM lead ingress for the shuffler sandbox"
+
+# Prevent Python from writing .pyc and enable unbuffered stdout/stderr
+# so Rich panels stream to `docker compose logs` in real time.
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Install only the runtime dependencies
+RUN pip install --no-cache-dir \
+    fastapi>=0.111.0 \
+    uvicorn[standard]>=0.30.0 \
+    rich>=13.7.0
+
+COPY mock_receiver.py .
+
+# Run as non-root
+RUN adduser --disabled-password --no-create-home appuser
+USER appuser
+
+EXPOSE 8001
+
+CMD ["uvicorn", "mock_receiver:app", "--host", "0.0.0.0", "--port", "8001"]

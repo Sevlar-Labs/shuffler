@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=70.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# ── Project Metadata ──────────────────────────────────────────────────── #
+
+[project]
+name = "shuffler"
+version = "1.0.0"
+description = "AI pipeline chaos engineering CLI toolkit"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Sevlar Labs Engineering", email = "engineering@sevlarlabs.dev" },
+]
+keywords = ["chaos-engineering", "cli", "ai", "llm", "testing"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Testing",
+]
+
+# ── Dependencies (migrated from requirements.txt) ─────────────────────── #
+
+dependencies = [
+    # CLI
+    "typer>=0.12.0",
+    "rich>=13.7.0",
+    "httpx>=0.27.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    # Server (chaos_agent + mock_receiver)
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.30.0",
+    "google-generativeai>=0.5.0",
+    # Database simulation (test_runner.py)
+    "asyncpg>=0.29.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.0.0",
+    "ruff>=0.8.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.8.0",
+]
+
+# ── CLI Entry Point ───────────────────────────────────────────────────── #
+
+[project.scripts]
+shuffler = "shuffler.main:cli"
+
+# ── Setuptools Discovery ──────────────────────────────────────────────── #
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+# ── Pytest Configuration ──────────────────────────────────────────────── #
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+# ── Ruff Configuration ────────────────────────────────────────────────── #
+
+[tool.ruff]
+line-length = 99
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]

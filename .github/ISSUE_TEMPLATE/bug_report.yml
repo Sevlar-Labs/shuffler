@@ -1,0 +1,90 @@
+name: Bug Report
+description: Report a defect in Shuffler. Provide structured diagnostic data so maintainers can reproduce and resolve the issue efficiently.
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: >
+        Provide a clear and concise description of the defect. Include what
+        component is affected (CLI, attack vector, display, etc.) and the
+        observable incorrect behavior.
+      placeholder: "Describe the bug..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: >
+        List the exact sequence of commands or actions required to reproduce the
+        defect. Include the full command with all flags.
+      placeholder: |
+        1. Run `shuffler attack --target http://localhost:8000 --vector duplication --burst 50`
+        2. Observe the error in the terminal output.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: >
+        Describe what you expected to happen when executing the steps above.
+      placeholder: "The command should have..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: >
+        Describe what actually happened. Include the full error message or
+        traceback if applicable.
+      placeholder: "Instead, the following error was raised..."
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      description: "The OS and version where the defect was observed."
+      placeholder: "e.g., Ubuntu 24.04, macOS 15.2, Windows 11"
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python Version
+      description: "Output of `python3 --version`."
+      placeholder: "e.g., Python 3.13.5"
+    validations:
+      required: true
+
+  - type: input
+    id: shuffler-version
+    attributes:
+      label: Shuffler Version
+      description: "Output of `shuffler --version`."
+      placeholder: "e.g., 1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: Installation Method
+      description: "How was Shuffler installed?"
+      options:
+        - "pipx (global)"
+        - "pip install -e . (editable venv)"
+        - "pip install (non-editable)"
+        - "Other"
+    validations:
+      required: true

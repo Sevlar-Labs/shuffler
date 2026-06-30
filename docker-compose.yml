@@ -1,0 +1,78 @@
+# ──────────────────────────────────────────────────────────────────────
+# docker-compose.yml — shuffler local chaos engineering sandbox
+# ──────────────────────────────────────────────────────────────────────
+#   docker compose up --build
+# ──────────────────────────────────────────────────────────────────────
+
+services:
+  # ── Postgres datastore (idempotency ledger + lead_transactions) ──── #
+  datastore:
+    image: postgres:15-alpine
+    container_name: shuffler-datastore
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: shuffler
+      POSTGRES_PASSWORD: shuffler_secret
+      POSTGRES_DB: shuffler_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shuffler -d shuffler_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - shuffler-net
+
+  # ── Mock CRM Receiver (simulated HubSpot / Salesforce ingress) ──── #
+  mock-crm:
+    build:
+      context: .
+      dockerfile: Dockerfile.mock
+    container_name: shuffler-mock-crm
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/healthz')"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - shuffler-net
+
+  # ── Sevlar Gateway (proprietary blackbox — image built separately) ─ #
+  sevlar-gateway:
+    image: ghcr.io/sevlarlabs/sevlar-sandbox:latest
+    container_name: shuffler-sevlar-gateway
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # Database connection
+      DB_HOST: datastore
+      DB_PORT: "5432"
+      DB_USER: shuffler
+      DB_PASSWORD: shuffler_secret
+      DB_NAME: shuffler_db
+      DB_DSN: "postgresql://shuffler:shuffler_secret@datastore:5432/shuffler_db"
+      # Egress — all processed leads are forwarded here
+      CRM_WEBHOOK_URI: "http://mock-crm:8001/crm/v1/leads"
+    depends_on:
+      datastore:
+        condition: service_healthy
+      mock-crm:
+        condition: service_healthy
+    networks:
+      - shuffler-net
+
+# ── shared bridge network ─────────────────────────────────────────── #
+networks:
+  shuffler-net:
+    driver: bridge
+
+# ── persistent volume for Postgres ────────────────────────────────── #
+volumes:
+  pgdata:

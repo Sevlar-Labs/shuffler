@@ -15,13 +15,15 @@ app = FastAPI()
 # Configure the Live Probabilistic Model
 # It requires the API key to be exported in your terminal environment
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY", "dummy"))
-model = genai.GenerativeModel('gemini-3.1-flash-lite')
+model = genai.GenerativeModel("gemini-3.1-flash-lite")
 
 _hallucination_lock: asyncio.Lock = asyncio.Lock()
 _hallucination_counter: int = 0
 
+
 class LeadInput(BaseModel):
     raw_text: str
+
 
 @app.post("/agent/extract")
 async def extract_lead(payload: LeadInput, x_chaos_mode: str = Header(default="normal")):
@@ -34,9 +36,9 @@ async def extract_lead(payload: LeadInput, x_chaos_mode: str = Header(default="n
         "following text and return strictly valid JSON.\n"
         "    CRITICAL STRUCTURE INSTRUCTIONS:\n"
         "    1. Return a single, flat JSON object {}, NOT an array [].\n"
-        "    2. Use lower-case keys exactly as written here: \"firstname\" and \"email\".\n"
+        '    2. Use lower-case keys exactly as written here: "firstname" and "email".\n'
         "    3. If the email address is missing from the text, return the value as "
-        "\"unknown@example.com\" so the system has a valid primary key.\n\n"
+        '"unknown@example.com" so the system has a valid primary key.\n\n'
         f"    Text: {payload.raw_text}\n"
     )
 
@@ -79,7 +81,7 @@ async def extract_lead(payload: LeadInput, x_chaos_mode: str = Header(default="n
     print("[V] Extraction successful. Returning mapped JSON to orchestrator.")
     try:
         # Strip potential markdown formatting to ensure a clean handoff
-        clean_json = ai_output.replace('```json', '').replace('```', '').strip()
+        clean_json = ai_output.replace("```json", "").replace("```", "").strip()
         return json.loads(clean_json)
     except Exception as e:
         print(f"[!] Natural parsing error: {e}")

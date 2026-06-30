@@ -95,9 +95,7 @@ class TestCRMReceiveEndpoint:
         The receiver must detect the corruption — the top-level raw-body
         regex fires first because json.dumps preserves literal backticks,
         but either detection layer satisfies the invariant."""
-        nested_payload: str = json.dumps(
-            {"raw_output": '```json\n{"firstname": "Carol"}\n```'}
-        )
+        nested_payload: str = json.dumps({"raw_output": '```json\n{"firstname": "Carol"}\n```'})
         resp = client.post("/crm/v1/leads", content=nested_payload)
         body = resp.json()
         assert body["status"] == "error"

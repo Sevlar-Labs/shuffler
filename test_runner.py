@@ -13,7 +13,7 @@ import time
 import asyncpg
 from dotenv import load_dotenv
 
-load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
 # --- SECRETS & ENVIRONMENT ---
 DB_DSN = os.environ.get("DB_DSN")
@@ -28,12 +28,14 @@ if not CRM_WEBHOOK_URI:
 INBOUND_AI_PAYLOAD = {
     "lead_name": "John Doe",
     "lead_email": "john.doe@enterprise.com",
-    "ai_confidence_score": 98.5
+    "ai_confidence_score": 98.5,
 }
 RAW_TEXT_PAYLOAD = json.dumps(INBOUND_AI_PAYLOAD)
 
+
 async def generate_idempotency_hash(payload_string: str) -> str:
-    return hashlib.sha256(payload_string.encode('utf-8')).hexdigest()
+    return hashlib.sha256(payload_string.encode("utf-8")).hexdigest()
+
 
 async def vulnerable_webhook_handler(pool):
     """
@@ -58,6 +60,7 @@ async def vulnerable_webhook_handler(pool):
 
         print(f"[!] VULNERABLE PATH: Hitting CRM Platform at {CRM_WEBHOOK_URI}...")
 
+
 async def agentic_waf_handler(pool):
     """
     SCENARIO 2: SRE Gateway
@@ -74,10 +77,10 @@ async def agentic_waf_handler(pool):
             VALUES ($1, 'CRM')
             ON CONFLICT (idempotency_key) DO NOTHING
             """,
-            idem_key
+            idem_key,
         )
 
-        if result.endswith('0'):
+        if result.endswith("0"):
             print(
                 f"[X] SRE GATEWAY BLOCKED: Race condition detected. "
                 f"Payload hash {idem_key[:8]} already processed."
@@ -97,6 +100,7 @@ async def agentic_waf_handler(pool):
         print(f"[V] SRE GATEWAY: Pushing pristine data to CRM at {CRM_WEBHOOK_URI}...")
         return {"status": 201, "message": "Lead processed and sent."}
 
+
 async def run_simulation():
     pool = await asyncpg.create_pool(DB_DSN)
 
@@ -104,10 +108,7 @@ async def run_simulation():
     time.sleep(2)
 
     print("--- TEST 1: CURRENT VULNERABLE ARCHITECTURE ---")
-    await asyncio.gather(
-        vulnerable_webhook_handler(pool),
-        vulnerable_webhook_handler(pool)
-    )
+    await asyncio.gather(vulnerable_webhook_handler(pool), vulnerable_webhook_handler(pool))
     print("RESULT: CRM is corrupted. You now have two identical records pushed to CRM.\n")
 
     # Resetting the database for test 2
@@ -118,16 +119,14 @@ async def run_simulation():
     time.sleep(3)
 
     print("--- TEST 2: AGENTIC WAF GATEWAY ---")
-    await asyncio.gather(
-        agentic_waf_handler(pool),
-        agentic_waf_handler(pool)
-    )
+    await asyncio.gather(agentic_waf_handler(pool), agentic_waf_handler(pool))
     print(
         "RESULT: Architecture secured. "
         "The database lock mathematically prevented the duplication.\n"
     )
 
     await pool.close()
+
 
 if __name__ == "__main__":
     asyncio.run(run_simulation())

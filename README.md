@@ -91,6 +91,18 @@ shuffler --version
 shuffler --help
 ```
 
+## Quick Start (Demo Mode)
+To see Shuffler in action immediately, use the included open-source dummy CRM schema:
+`uv run shuffler serve --collection examples/dummy_crm.postman_collection.json`
+
+## Enterprise Chaos Testing
+To stress-test your actual AI pipelines, export your company's Postman Collection v2.1.
+1. Download your collection from Postman (e.g., `my_enterprise_api.json`).
+2. Run Shuffler against your local file. 
+`uv run shuffler serve --collection /path/to/my_enterprise_api.json`
+
+*Note: Shuffler runs entirely locally. Your proprietary API schemas never leave your machine.*
+
 ## Usage
 
 ### Launching an Attack

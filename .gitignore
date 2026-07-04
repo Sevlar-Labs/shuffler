@@ -44,3 +44,7 @@ docker-compose.override.yml
 htmlcov/
 .pytest_cache/
 .mypy_cache/
+
+# Prevent accidental commits of local testing artifacts and vendor schemas
+*.postman_collection.json
+shared_schemas/*.json

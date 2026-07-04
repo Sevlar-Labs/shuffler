@@ -94,14 +94,10 @@ def serve(
     console.print(f"[bold cyan]Parsing Postman Collection:[/] {collection}")
     specs = parse_postman_collection(collection)
 
-    console.print(
-        f"[bold green]Compiling Strict Gatekeeper with {len(specs)} routes...[/]"
-    )
+    console.print(f"[bold green]Compiling Strict Gatekeeper with {len(specs)} routes...[/]")
     gatekeeper_app = create_gatekeeper_app(specs)
 
-    console.print(
-        f"[bold bright_white]Launching Gatekeeper on[/] [bold yellow]0.0.0.0:{port}[/]…"
-    )
+    console.print(f"[bold bright_white]Launching Gatekeeper on[/] [bold yellow]0.0.0.0:{port}[/]…")
     uvicorn.run(gatekeeper_app, host="0.0.0.0", port=port, log_level="info")
 
 
@@ -139,9 +135,7 @@ def attack(
     specs = parse_postman_collection(collection)
 
     # Isolate mutable routes for attack
-    targets = [
-        s for s in specs if s.method in ("POST", "PUT", "PATCH") and s.expected_schema
-    ]
+    targets = [s for s in specs if s.method in ("POST", "PUT", "PATCH") and s.expected_schema]
 
     if not targets:
         console.print(
@@ -174,9 +168,7 @@ def attack(
         f"\n[bold yellow]Target Acquired:[/] [bold bright_white]{target.method} {target.path}[/]"
     )
     console.print(f"[bold yellow]Schema Lock:[/] {schema_keys}")
-    console.print(
-        f"[bold red]Deploying {burst} payloads using vector: {vector.value}…[/]"
-    )
+    console.print(f"[bold red]Deploying {burst} payloads using vector: {vector.value}…[/]")
 
     # --- EXECUTION ENGINE ---
     # 1. Generate a valid payload based on the inferred schema types
@@ -237,8 +229,7 @@ def attack(
                         raw_json_str = json.dumps(payload_copy)
                     elif chaos_type == "type_mutation":
                         numeric_keys = [
-                            k for k, v in target.expected_schema.items()
-                            if v in (int, float)
+                            k for k, v in target.expected_schema.items() if v in (int, float)
                         ]
                         if numeric_keys:
                             payload_copy[random.choice(numeric_keys)] = "MALFORMED_STRING_VAL"
@@ -267,10 +258,7 @@ def attack(
                 console.print(f"│   [dim]Outbound:[/dim] {req_str}")
 
                 if isinstance(r, httpx.Response):
-                    status_color = (
-                        "green" if r.status_code in (200, 201, 202, 204)
-                        else "red"
-                    )
+                    status_color = "green" if r.status_code in (200, 201, 202, 204) else "red"
                     console.print(
                         f"│   [dim]Inbound :[/dim] "
                         f"[bold {status_color}]HTTP {r.status_code}"
@@ -283,8 +271,7 @@ def attack(
                         blocked += 1
                 else:
                     console.print(
-                        "│   [dim]Inbound :[/dim] "
-                        "[bold red]NETWORK ERROR / DROPPED[/bold red]"
+                        "│   [dim]Inbound :[/dim] [bold red]NETWORK ERROR / DROPPED[/bold red]"
                     )
                     blocked += 1
 
@@ -297,13 +284,9 @@ def attack(
             console.print("│             ⚡ ATTACK DEBRIEF ⚡             │")
             console.print("├──────────────────────────────────────────────┤")
             console.print(
-                f"│ [bold green]Gatekeeper Accepted (2xx):[/bold green]"
-                f" {accepted:<15} │"
+                f"│ [bold green]Gatekeeper Accepted (2xx):[/bold green] {accepted:<15} │"
             )
-            console.print(
-                f"│ [bold red]Gatekeeper Blocked (4xx/5xx):[/bold red]"
-                f" {blocked:<12} │"
-            )
+            console.print(f"│ [bold red]Gatekeeper Blocked (4xx/5xx):[/bold red] {blocked:<12} │")
             console.print("╰──────────────────────────────────────────────╯")
 
     asyncio.run(_fire_burst())

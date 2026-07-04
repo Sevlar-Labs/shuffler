@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import json
 import re
+
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
+
 from shuffler.parsers.postman import DynamicRouteSpec
 
 # Pre-compiled regex for lightning-fast interception of LLM Markdown hallucinations
@@ -52,12 +53,13 @@ def create_gatekeeper_app(specs: list[DynamicRouteSpec]) -> FastAPI:
                     if not isinstance(payload, dict):
                         return JSONResponse(
                             status_code=status.HTTP_400_BAD_REQUEST,
-                            content={"status": "error", "message": "Expected JSON object payload."},
+                            content={
+                                "status": "error",
+                                "message": "Expected JSON object payload.",
+                            },
                         )
 
                     # 1. Enforce Presence of Expected Keys (Do not forbid extra keys)
-                    expected_keys = set(route_spec.expected_schema.keys())
-                    payload_keys = set(payload.keys())
 
                     # 2. Strict Real-World Data Type Checking
                     type_violations = []
@@ -66,12 +68,16 @@ def create_gatekeeper_app(specs: list[DynamicRouteSpec]) -> FastAPI:
                             actual_val = payload[key]
 
                             # Handle standard JSON float vs int parity
-                            if expected_type in (int, float) and isinstance(actual_val, (int, float)):
+                            if expected_type in (int, float) and isinstance(
+                                actual_val, (int, float)
+                            ):
                                 continue
 
                             if not isinstance(actual_val, expected_type):
                                 type_violations.append(
-                                    f"Key '{key}' violation: Expected {expected_type.__name__}, got {type(actual_val).__name__}"
+                                    f"Key '{key}' violation: "
+                                    f"Expected {expected_type.__name__}, "
+                                    f"got {type(actual_val).__name__}"
                                 )
 
                     if type_violations:

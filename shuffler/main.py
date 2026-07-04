@@ -7,11 +7,10 @@ import asyncio
 import json
 import random
 import sys
-
-import httpx
 from enum import Enum
 from typing import Optional
 
+import httpx
 import typer
 import uvicorn
 from rich.console import Console
@@ -183,18 +182,24 @@ def attack(
     # 1. Generate a valid payload based on the inferred schema types
     dummy_payload = {}
     for key, val_type in target.expected_schema.items():
-        if val_type == int:
+        if val_type is int:
             dummy_payload[key] = 99
-        elif val_type == float:
+        elif val_type is float:
             dummy_payload[key] = 0.99
         else:
             dummy_payload[key] = "chaos_test"
 
     # --- VECTOR STATUS ---
     if vector.lower() == "hallucination":
-        console.print("[bold red]🧪 VECTOR ACTIVE: Probabilistic hallucination mutations enabled...[/bold red]")
+        console.print(
+            "[bold red]🧪 VECTOR ACTIVE: Probabilistic hallucination"
+            " mutations enabled...[/bold red]"
+        )
     elif vector.lower() == "duplication":
-        console.print("[bold yellow]🧪 VECTOR ACTIVE: Firing exact duplicate payloads concurrently...[/bold yellow]")
+        console.print(
+            "[bold yellow]🧪 VECTOR ACTIVE: Firing exact duplicate"
+            " payloads concurrently...[/bold yellow]"
+        )
 
     target_url = f"{target_host.rstrip('/')}{target.path}"
     console.print(f"[dim]Assembling payload: {dummy_payload}[/dim]")
@@ -255,19 +260,32 @@ def attack(
             blocked = 0
 
             for idx, (req_str, mut_label, r) in enumerate(results):
-                console.print(f"│ ➜ [bold yellow]PAYLOAD {idx + 1}/{burst} | TYPE: [{mut_label}][/bold yellow]")
+                console.print(
+                    f"│ ➜ [bold yellow]PAYLOAD {idx + 1}/{burst}"
+                    f" | TYPE: [{mut_label}][/bold yellow]"
+                )
                 console.print(f"│   [dim]Outbound:[/dim] {req_str}")
 
                 if isinstance(r, httpx.Response):
-                    status_color = "green" if r.status_code in (200, 201, 202, 204) else "red"
-                    console.print(f"│   [dim]Inbound :[/dim] [bold {status_color}]HTTP {r.status_code}[/bold {status_color}] -> {r.text}")
+                    status_color = (
+                        "green" if r.status_code in (200, 201, 202, 204)
+                        else "red"
+                    )
+                    console.print(
+                        f"│   [dim]Inbound :[/dim] "
+                        f"[bold {status_color}]HTTP {r.status_code}"
+                        f"[/bold {status_color}] -> {r.text}"
+                    )
 
                     if r.status_code in (200, 201, 202, 204):
                         accepted += 1
                     else:
                         blocked += 1
                 else:
-                    console.print("│   [dim]Inbound :[/dim] [bold red]NETWORK ERROR / DROPPED[/bold red]")
+                    console.print(
+                        "│   [dim]Inbound :[/dim] "
+                        "[bold red]NETWORK ERROR / DROPPED[/bold red]"
+                    )
                     blocked += 1
 
                 console.print("│")  # Spacer between payloads
@@ -278,8 +296,14 @@ def attack(
             console.print("╭──────────────────────────────────────────────╮")
             console.print("│             ⚡ ATTACK DEBRIEF ⚡             │")
             console.print("├──────────────────────────────────────────────┤")
-            console.print(f"│ [bold green]Gatekeeper Accepted (2xx):[/bold green] {accepted:<15} │")
-            console.print(f"│ [bold red]Gatekeeper Blocked (4xx/5xx):[/bold red] {blocked:<12} │")
+            console.print(
+                f"│ [bold green]Gatekeeper Accepted (2xx):[/bold green]"
+                f" {accepted:<15} │"
+            )
+            console.print(
+                f"│ [bold red]Gatekeeper Blocked (4xx/5xx):[/bold red]"
+                f" {blocked:<12} │"
+            )
             console.print("╰──────────────────────────────────────────────╯")
 
     asyncio.run(_fire_burst())

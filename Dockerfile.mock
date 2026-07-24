@@ -20,6 +20,7 @@ RUN pip install --no-cache-dir \
     rich>=13.7.0
 
 COPY mock_receiver.py .
+COPY examples/ ./examples/
 
 # Run as non-root
 RUN adduser --disabled-password --no-create-home appuser

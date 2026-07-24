@@ -204,3 +204,18 @@ async def receive_lead(request: Request) -> dict[str, Any]:
 @app.get("/healthz")
 async def healthz() -> dict[str, str]:
     return {"status": "healthy"}
+
+
+@app.get("/api-catalog-public/v1/apis/crm/v3/objects/contacts")
+async def get_openapi_schema() -> dict[str, Any]:
+    try:
+        with open("examples/dummy_crm.postman_collection.json", "r") as f:
+            return json.load(f)
+    except Exception:
+        return {"properties": {"email": {"type": "string"}, "firstname": {"type": "string"}}}
+
+
+@app.get("/crm/v3/properties/contacts")
+async def get_properties() -> dict[str, Any]:
+    return {"results": []}
+

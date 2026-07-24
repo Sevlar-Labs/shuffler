@@ -54,8 +54,19 @@ async def extract_lead(payload: LeadInput, x_chaos_mode: str = Header(default="n
         # The orchestrator will panic and double-fire during this sleep window.
 
     print("[*] Contacting the live LLM...")
-    response = model.generate_content(prompt)
-    ai_output = response.text.strip()
+    try:
+        response = model.generate_content(prompt)
+        ai_output = response.text.strip()
+    except Exception as e:
+        print(f"[!] Live LLM unreachable ({e}). Using deterministic offline fallback...")
+        try:
+            data = json.loads(payload.raw_text)
+            fname = data.get("lead_name", "Jane Doe").split()[0] if "lead_name" in data else data.get("firstname", "Jane")
+            email = data.get("lead_email", data.get("email", "unknown@example.com"))
+        except Exception:
+            fname = "Jane"
+            email = "unknown@example.com"
+        ai_output = json.dumps({"firstname": fname, "email": email})
 
     # ---------------------------------------------------------
     # CHAOS VECTOR B: SCHEMA ENTROPY (The Data Hallucination)

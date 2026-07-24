@@ -1,0 +1,12 @@
+proxies:
+  openai:
+    port: 8081
+    upstream: "https://api.openai.com"
+    poisons:
+      semantic: 0.15
+      temporal: 0.05
+  crm:
+    port: 8082
+    upstream: "http://localhost:8000"
+    poisons:
+      network: 0.10

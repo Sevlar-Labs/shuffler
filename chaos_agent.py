@@ -61,7 +61,10 @@ async def extract_lead(payload: LeadInput, x_chaos_mode: str = Header(default="n
         print(f"[!] Live LLM unreachable ({e}). Using deterministic offline fallback...")
         try:
             data = json.loads(payload.raw_text)
-            fname = data.get("lead_name", "Jane Doe").split()[0] if "lead_name" in data else data.get("firstname", "Jane")
+            if "lead_name" in data:
+                fname = data.get("lead_name", "Jane Doe").split()[0]
+            else:
+                fname = data.get("firstname", "Jane")
             email = data.get("lead_email", data.get("email", "unknown@example.com"))
         except Exception:
             fname = "Jane"

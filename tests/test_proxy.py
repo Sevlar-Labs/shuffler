@@ -1,8 +1,9 @@
+import httpx
 import pytest
 from fastapi import FastAPI, Request
+
 from shuffler.config import ProxyConfig, load_config
 from shuffler.proxy.server import create_proxy_app
-import httpx
 
 
 def test_config_parsing(tmp_path):

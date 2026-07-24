@@ -1,6 +1,6 @@
+import httpx
 import pytest
 from fastapi import FastAPI
-import httpx
 
 from shuffler.config import ProxyConfig
 from shuffler.poisons.engine import PoisonEngine

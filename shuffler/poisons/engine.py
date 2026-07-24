@@ -41,7 +41,10 @@ class PoisonEngine:
     def process_response(
         self, content: bytes, media_type: Optional[str]
     ) -> tuple[bytes, list[str]]:
-        """Run post-response payload poisons (semantic). Returns (new_content, triggered_poisons)."""
+        """Run post-response payload poisons (semantic).
+
+        Returns (new_content, triggered_poisons).
+        """
         triggered = []
 
         if self.should_trigger("semantic"):

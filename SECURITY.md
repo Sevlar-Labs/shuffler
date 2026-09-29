@@ -33,7 +33,7 @@ The Sevlar Labs security team commits to the following response timeline:
 
 - **Acknowledgment**: Within **5 business days** of receiving the report, we will
   confirm receipt and assign an internal tracking identifier.
-- **Assessment**: Within **5 business days**, we will provide an initial
+- **Assessment**: Within **10 business days**, we will provide an initial
   severity assessment and an estimated timeline for remediation.
 - **Patch Release**: A fix will be developed, reviewed, and published as a
   patch release. The reporter will be notified before public disclosure.

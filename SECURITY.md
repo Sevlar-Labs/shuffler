@@ -7,8 +7,8 @@ are considered end-of-life and will not be updated.
 
 | Version   | Supported          |
 |-----------|--------------------|
-| >= 1.0.x  | Yes                |
-| < 1.0     | No                 |
+| 0.1.x (alpha) | Yes            |
+| < 0.1     | No                 |
 
 ## Reporting a Vulnerability
 
@@ -24,6 +24,8 @@ Instead, use GitHub's native **Private Vulnerability Reporting** feature:
 
 This ensures that the report is delivered securely and is visible only to the
 repository maintainers.
+
+If you can't use GitHub's private reporting, email shem@sevlarlabs.com.
 
 ## Response SLA
 

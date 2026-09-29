@@ -72,7 +72,7 @@ body:
     attributes:
       label: Shuffler Version
       description: "Output of `shuffler --version`."
-      placeholder: "e.g., 1.0.0"
+      placeholder: "e.g., 0.1.0"
     validations:
       required: true
 

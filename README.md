@@ -2,7 +2,9 @@
   <img src="./banner.svg" alt="Shuffler Banner" width="100%" />
 </p>
 
-**Universal Local L7 Chaos Proxy** — The "Toxiproxy for Agentic Systems". Intercept traffic between probabilistic AI agents and deterministic systems to test resilience against network and semantic chaos.
+Early-stage: interfaces may change.
+
+**A local chaos proxy for AI agent integrations, inspired by Toxiproxy.** Intercept traffic between probabilistic AI agents and deterministic systems to test resilience against network and semantic chaos.
 
 ## Overview
 

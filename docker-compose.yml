@@ -2,6 +2,7 @@
 # docker-compose.yml — shuffler local chaos engineering sandbox
 # ──────────────────────────────────────────────────────────────────────
 #   docker compose up --build
+#   Local testing only.
 # ──────────────────────────────────────────────────────────────────────
 
 services:
@@ -11,10 +12,10 @@ services:
     container_name: shuffler-datastore
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     environment:
       POSTGRES_USER: shuffler
-      POSTGRES_PASSWORD: shuffler_secret
+      POSTGRES_PASSWORD: changeme-demo-only
       POSTGRES_DB: shuffler_db
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -55,9 +56,9 @@ services:
       DB_HOST: datastore
       DB_PORT: "5432"
       DB_USER: shuffler
-      DB_PASSWORD: shuffler_secret
+      DB_PASSWORD: changeme-demo-only
       DB_NAME: shuffler_db
-      DB_DSN: "postgresql://shuffler:shuffler_secret@datastore:5432/shuffler_db"
+      DB_DSN: "postgresql://shuffler:changeme-demo-only@datastore:5432/shuffler_db"
       # Egress — all processed leads are forwarded here
       CRM_WEBHOOK_URI: "http://mock-crm:8001/crm/v1/leads"
     depends_on:

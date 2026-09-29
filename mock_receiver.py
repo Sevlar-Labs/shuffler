@@ -29,7 +29,7 @@ from rich.text import Text
 app = FastAPI(
     title="Mock CRM Receiver",
     description="Simulated enterprise CRM lead ingress for the shuffler sandbox.",
-    version="1.0.0",
+    version="0.1.0",
 )
 
 console: Console = Console(force_terminal=True)
@@ -218,4 +218,3 @@ async def get_openapi_schema() -> dict[str, Any]:
 @app.get("/crm/v3/properties/contacts")
 async def get_properties() -> dict[str, Any]:
     return {"results": []}
-

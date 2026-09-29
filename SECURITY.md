@@ -7,8 +7,8 @@ are considered end-of-life and will not be updated.
 
 | Version   | Supported          |
 |-----------|--------------------|
-| >= 1.0.x  | Yes                |
-| < 1.0     | No                 |
+| 0.1.x (alpha) | Yes            |
+| < 0.1     | No                 |
 
 ## Reporting a Vulnerability
 
@@ -25,13 +25,15 @@ Instead, use GitHub's native **Private Vulnerability Reporting** feature:
 This ensures that the report is delivered securely and is visible only to the
 repository maintainers.
 
+If you can't use GitHub's private reporting, email shem@sevlarlabs.com.
+
 ## Response SLA
 
 The Sevlar Labs security team commits to the following response timeline:
 
-- **Acknowledgment**: Within **48 hours** of receiving the report, we will
+- **Acknowledgment**: Within **5 business days** of receiving the report, we will
   confirm receipt and assign an internal tracking identifier.
-- **Assessment**: Within **5 business days**, we will provide an initial
+- **Assessment**: Within **10 business days**, we will provide an initial
   severity assessment and an estimated timeline for remediation.
 - **Patch Release**: A fix will be developed, reviewed, and published as a
   patch release. The reporter will be notified before public disclosure.

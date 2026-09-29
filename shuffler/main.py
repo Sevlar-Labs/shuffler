@@ -57,9 +57,7 @@ async def _serve_proxies(config_path: str) -> None:
     try:
         config = load_config(config_path)
     except FileNotFoundError:
-        console.print(
-            f"[bold red]Configuration file '{config_path}' not found.[/bold red]"
-        )
+        console.print(f"[bold red]Configuration file '{config_path}' not found.[/bold red]")
         sys.exit(1)
     except Exception as e:
         console.print(f"[bold red]Failed to parse configuration:[/] {e}")
@@ -90,14 +88,10 @@ async def _serve_proxies(config_path: str) -> None:
         tasks.append(server.serve())
 
     if not tasks:
-        console.print(
-            "[bold yellow]No proxies defined in config. Exiting...[/bold yellow]"
-        )
+        console.print("[bold yellow]No proxies defined in config. Exiting...[/bold yellow]")
         return
 
-    console.print(
-        f"[bold green]Starting {len(tasks)} concurrent listeners...[/bold green]"
-    )
+    console.print(f"[bold green]Starting {len(tasks)} concurrent listeners...[/bold green]")
     await asyncio.gather(*tasks)
 
 
@@ -108,7 +102,7 @@ def serve(
         "--config",
         "-c",
         help="Path to shuffler.yaml config file.",
-    )
+    ),
 ) -> None:
     """Start the Shuffler Universal Local L7 Chaos Proxy."""
     try:

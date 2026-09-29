@@ -45,7 +45,7 @@ def show_banner() -> None:
     console.print(
         Panel(
             banner_text,
-            title="[bold bright_white]SHUFFLER v1.0[/]",
+            title="[bold bright_white]SHUFFLER v0.1[/]",
             subtitle="[dim]AI Pipeline Chaos Engineering Toolkit[/dim]",
             border_style="bold #FF3300",
             padding=(0, 2),

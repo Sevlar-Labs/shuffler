@@ -6,17 +6,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shuffler"
-version = "1.0.0"
+version = "0.1.0"
 description = "AI pipeline chaos engineering CLI toolkit"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
 authors = [
-    { name = "Sevlar Labs Engineering", email = "engineering@sevlarlabs.dev" },
+    { name = "Sevlar Labs Engineering", email = "shem@sevlarlabs.com" },
 ]
 keywords = ["chaos-engineering", "cli", "ai", "llm", "testing"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
@@ -74,6 +74,10 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 99
 target-version = "py311"
+
+[tool.ruff.format]
+# Only format Python source; newer ruff versions also reformat code blocks inside Markdown docs.
+exclude = ["*.md"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]

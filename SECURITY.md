@@ -31,7 +31,7 @@ If you can't use GitHub's private reporting, email shem@sevlarlabs.com.
 
 The Sevlar Labs security team commits to the following response timeline:
 
-- **Acknowledgment**: Within **48 hours** of receiving the report, we will
+- **Acknowledgment**: Within **5 business days** of receiving the report, we will
   confirm receipt and assign an internal tracking identifier.
 - **Assessment**: Within **5 business days**, we will provide an initial
   severity assessment and an estimated timeline for remediation.

@@ -75,5 +75,9 @@ testpaths = ["tests"]
 line-length = 99
 target-version = "py311"
 
+[tool.ruff.format]
+# Only format Python source; newer ruff versions also reformat code blocks inside Markdown docs.
+exclude = ["*.md"]
+
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]

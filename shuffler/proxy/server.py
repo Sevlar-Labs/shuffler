@@ -79,9 +79,7 @@ def create_proxy_app(proxy_name: str, proxy_config: ProxyConfig) -> FastAPI:
             media_type = upstream_response.headers.get("content-type")
 
             # Post-response poison processing (semantic entropy)
-            resp_content, resp_poisons = poison_engine.process_response(
-                resp_content, media_type
-            )
+            resp_content, resp_poisons = poison_engine.process_response(resp_content, media_type)
             triggered_poisons.extend(resp_poisons)
 
             resp_headers = dict(upstream_response.headers)

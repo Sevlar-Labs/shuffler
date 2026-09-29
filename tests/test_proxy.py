@@ -69,9 +69,7 @@ async def test_proxy_forwarding():
         async with httpx.AsyncClient(
             transport=httpx.ASGITransport(app=proxy_app), base_url="http://localhost:8081"
         ) as proxy_client:
-            resp = await proxy_client.post(
-                "/v1/chat/completions", json={"prompt": "hello"}
-            )
+            resp = await proxy_client.post("/v1/chat/completions", json={"prompt": "hello"})
             assert resp.status_code == 200
             data = resp.json()
             assert data["id"] == "chatcmpl-123"

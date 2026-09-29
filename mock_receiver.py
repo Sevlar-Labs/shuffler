@@ -218,4 +218,3 @@ async def get_openapi_schema() -> dict[str, Any]:
 @app.get("/crm/v3/properties/contacts")
 async def get_properties() -> dict[str, Any]:
     return {"results": []}
-

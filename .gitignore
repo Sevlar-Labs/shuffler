@@ -48,3 +48,6 @@ htmlcov/
 # Prevent accidental commits of local testing artifacts and vendor schemas
 *.postman_collection.json
 shared_schemas/*.json
+
+# Local agent tooling (not part of the project)
+.agents/
